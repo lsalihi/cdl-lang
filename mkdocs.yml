@@ -1,0 +1,49 @@
+site_name: CDL - Cognitive Domain Language
+site_description: A DSL for defining business logic in a declarative, traceable, and executable way.
+site_author: Pulsar Team
+site_url: https://lsalihi.github.io/cdl-lang/
+
+repo_name: lsalihi/cdl-lang
+repo_url: https://github.com/lsalihi/cdl-lang
+
+theme:
+  name: material
+  palette:
+    primary: blue
+    accent: blue
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Specification: spec.md
+  - Examples: examples.md
+  - API Reference: api.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - attr_list
+  - md_in_html

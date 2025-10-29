@@ -3,7 +3,9 @@ plugins {
     id 'application'
 }
 
-mainClassName = 'com.cdl.CDLCLI'
+application {
+    mainClass = 'com.cdl.CDLCLI'
+}
 
 jar {
     manifest {
@@ -16,6 +18,7 @@ jar {
 
 group 'com.cdl'
 version '1.0-SNAPSHOT'
+archivesBaseName = 'cdl'
 
 repositories {
     mavenCentral()
