@@ -1,7 +1,0 @@
-rule IBAN_MUST_BE_VALID
-type: "validation"
-statement: "The IBAN must be valid before issuance"
-applies_to: "INTERBANK_TRANSFER"
-test_hints: "Invalid IBAN => 400"
-evidence: "repo_legacy_VALIDATE_CBL_180_206"
-end

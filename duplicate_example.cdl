@@ -1,7 +1,0 @@
-intent INTERBANK_TRANSFER
-goal: "Process an SEPA interbank transfer"
-end
-
-intent INTERBANK_TRANSFER
-goal: "Another one"
-end

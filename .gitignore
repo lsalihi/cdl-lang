@@ -1,8 +1,0 @@
-build/
-*.class
-*.jar
-.gradle/
-demo.ir.json
-demo.openapi.yaml
-rule.ir.json
-concept-not-commit/
