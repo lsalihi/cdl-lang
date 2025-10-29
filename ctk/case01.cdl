@@ -1,0 +1,11 @@
+intent SAMPLE_INTENT
+goal: "Sample intent"
+inputs: "[input: String]"
+outputs: "[output: String]"
+evidence: "[test]"
+end
+
+mapping SAMPLE_MAPPING -> "api POST /api/sample"
+request: "SampleRequest"
+response: "SampleResponse"
+end

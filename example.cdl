@@ -1,0 +1,13 @@
+intent INTERBANK_TRANSFER
+goal: "Process an SEPA interbank transfer"
+inputs: "[accountId: String, amount: Money_EUR]"
+outputs: "[paymentId: PaymentId]"
+evidence: "[repo_legacy_PAYMENT_CBL_145_189, trace_POST_payments_at_2023_11_10]"
+tags: "[payments, sepa]"
+trust: "{confidence: 0.85, components: {evidence: 0.90, consistency: 0.80, tests: 0.75}}"
+end
+
+mapping INTERBANK_TRANSFER -> "api POST /api/v1/payments"
+request: "PaymentRequest"
+response: "PaymentResponse"
+end

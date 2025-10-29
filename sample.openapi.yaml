@@ -1,0 +1,13 @@
+{
+  "openapi": "3.0.0",
+  "info": {"title": "CDL API", "version": "1.0.0"},
+  "paths": {
+    "/api/payments": {
+      "post": {
+        "summary": "Generated from PAYMENT_MAPPING",
+        "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/PaymentRequest"}}}},
+        "responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/PaymentResponse"}}}}}
+      }
+    }
+  }
+}

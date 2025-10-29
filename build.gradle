@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = 'com.cdl.CDLCLI'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.cdl.CDLCLI'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+group 'com.cdl'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.antlr:antlr4-runtime:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
+}
