@@ -29,6 +29,8 @@ jobs:
           distribution: 'temurin'
       - name: Build JAR
         run: ./gradlew jar
+      - name: Clean Docker cache
+        run: docker system prune -f
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
