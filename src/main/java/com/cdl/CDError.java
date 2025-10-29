@@ -4,7 +4,11 @@ public class CDError {
     public enum Code {
         DUPLICATE_ID("E001", "Duplicate ID"),
         INVALID_TYPE("E002", "Invalid type"),
-        MISSING_EVIDENCE("E003", "Missing evidence");
+        MISSING_EVIDENCE("E003", "Missing evidence"),
+        TYPE_NOT_FOUND("E004", "Type not found"),
+        INVALID_CONSTRAINT("E005", "Invalid constraint"),
+        CIRCULAR_REFERENCE("E006", "Circular type reference"),
+        PARAMETER_MISMATCH("E007", "Parameter type mismatch");
 
         private final String code;
         private final String message;

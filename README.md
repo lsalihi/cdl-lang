@@ -1,5 +1,9 @@
 # CDL — Cognitive Domain Language
 
+[![CI](https://github.com/lsalihi/cdl-lang/actions/workflows/ci.yml/badge.svg)](https://github.com/lsalihi/cdl-lang/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/lsalihi/cdl-lang/branch/main/graph/badge.svg)](https://codecov.io/gh/lsalihi/cdl-lang)
+[![CTK](https://img.shields.io/badge/CTK-10%20tests-passing)](https://github.com/lsalihi/cdl-lang/tree/main/ctk)
+
 A DSL for defining business logic in a declarative, traceable, and executable way.
 
 ## Quick Demo
@@ -12,16 +16,23 @@ This builds, generates IR/OpenAPI, lints, and formats.
 
 ## Features
 
-- **Parser**: ANTLR-based lexer and parser for CDL syntax.
-- **AST Builder**: Constructs abstract syntax tree from parse tree.
-- **Symbol Table**: Detects duplicate IDs.
-- **Type Checker**: Basic validation of meta values.
-- **IR Generation**: Intermediate representation from AST.
-- **OpenAPI Generator**: Generates OpenAPI spec from intents/mappings.
+- **Parser**: ANTLR-based lexer and parser for CDL syntax with type system support.
+- **AST Builder**: Constructs abstract syntax tree from parse tree with type information.
+- **Symbol Table**: Detects duplicate IDs across all definitions.
+- **Type Checker**: Comprehensive validation of types, constraints, and references.
+- **IR Generation**: Intermediate representation from AST with full type metadata.
+- **OpenAPI Generator**: Generates OpenAPI 3.0 specs from intents with type-safe schemas.
 - **Rego Generator**: Generates OPA Rego policies from mappings.
-- **Linter**: Checks for errors and duplicates with error codes.
+- **Linter**: Checks for errors, duplicates, and type violations with detailed error codes.
 - **Formatter**: Formats CDL files with consistent style.
-- **Compiler Pipeline**: End-to-end compilation from CDL to backends.
+- **Compiler Pipeline**: End-to-end compilation from CDL to multiple backends.
+
+### Type System (v0.6.0)
+- **Type Definitions**: Custom types with field constraints
+- **Built-in Types**: `string`, `int`, `decimal`, `bool`, `date`, `datetime`, `Email`, `Money`
+- **Constraints**: `where` clauses with functions like `length()`, `contains()`, `today()`
+- **Type References**: Strong typing for intent inputs/outputs
+- **Validation**: Compile-time type checking and circular reference detection
 
 ## Build
 

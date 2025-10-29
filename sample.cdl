@@ -1,12 +1,29 @@
-intent PAYMENT_INTENT
-goal: "Process a payment"
-inputs: "[amount: Money, account: String]"
-outputs: "[id: String]"
-evidence: "[legacy_code]"
-tags: "[finance]"
+# Sample CDL with Type System
+
+type Money
+  amount: decimal where amount >= 0
+  currency: string
 end
 
-mapping PAYMENT_MAPPING -> "api POST /api/payments"
-request: "PaymentRequest"
-response: "PaymentResponse"
+type PaymentRequest
+  amount: Money
+  account: string
+end
+
+type PaymentResponse
+  id: string
+  status: string
+end
+
+intent PAYMENT_INTENT
+  goal: "Process a payment"
+  inputs: "[amount: Money, account: string]"
+  outputs: "[id: string]"
+  evidence: "[legacy_code]"
+  tags: "[finance]"
+end
+
+mapping PAYMENT_INTENT -> "api POST /api/payments"
+  request: "PaymentRequest"
+  response: "PaymentResponse"
 end

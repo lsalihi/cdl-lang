@@ -3,7 +3,7 @@
   "displayName": "CDL Language Support",
   "description": "Language support for Cognitive Domain Language (CDL)",
   "version": "0.6.0-alpha",
-  "publisher": "pulsar",
+  "publisher": "pulsaride",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -13,7 +13,10 @@
     "Linters"
   ],
   "activationEvents": [
-    "onLanguage:cdl"
+    "onLanguage:cdl",
+    "onCommand:cdl.generateOpenAPI",
+    "onCommand:cdl.lint",
+    "onCommand:cdl.format"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -37,6 +40,12 @@
         "path": "./syntaxes/cdl.tmLanguage.json"
       }
     ],
+    "snippets": [
+      {
+        "language": "cdl",
+        "path": "./snippets/cdl.code-snippets"
+      }
+    ],
     "commands": [
       {
         "command": "cdl.generateOpenAPI",
@@ -51,6 +60,11 @@
       {
         "command": "cdl.format",
         "title": "CDL: Format",
+        "category": "CDL"
+      },
+      {
+        "command": "cdl.build",
+        "title": "CDL: Build IR",
         "category": "CDL"
       }
     ],
@@ -70,6 +84,11 @@
           "when": "resourceExtname == .cdl",
           "command": "cdl.format",
           "group": "cdl@3"
+        },
+        {
+          "when": "resourceExtname == .cdl",
+          "command": "cdl.build",
+          "group": "cdl@4"
         }
       ],
       "explorer/context": [
@@ -87,6 +106,11 @@
           "type": "string",
           "default": "cdl",
           "description": "Path to CDL CLI executable"
+        },
+        "cdl.openapiOutput": {
+          "type": "string",
+          "default": "out/api.openapi.yaml",
+          "description": "Default output path for generated OpenAPI"
         },
         "cdl.lint.onSave": {
           "type": "boolean",

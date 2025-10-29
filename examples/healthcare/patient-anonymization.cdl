@@ -13,6 +13,42 @@ A hospital research department needs to anonymize patient data for clinical tria
 ## CDL Specification
 
 ```cdl
+type PatientRecord
+  patientId: string
+  name: string
+  dateOfBirth: date
+  medicalHistory: string
+  diagnosis: string
+  treatment: string
+end
+
+type AnonymizedPatientRecord
+  researchId: string
+  ageGroup: string
+  diagnosis: string
+  treatment: string
+end
+
+type AuditEntry
+  timestamp: datetime
+  action: string
+  userId: string
+  patientId: string
+  researchId: string
+end
+
+type AnonymizationRequest
+  patientRecord: PatientRecord
+  researchPurpose: string
+  retentionPeriod: int
+end
+
+type AnonymizationResponse
+  anonymizedRecord: AnonymizedPatientRecord
+  auditTrail: AuditEntry
+  consentReference: string
+end
+
 intent ANONYMIZE_PATIENT_DATA
   goal: "Anonymize patient data for research while preserving medical value"
   inputs: "[

@@ -1,0 +1,61 @@
+# CTK Case06: Constraint Validation Edge Cases
+
+This test case validates complex constraint expressions and edge cases in type validation.
+
+## CDL Specification
+
+```cdl
+type ValidationTest
+  # String constraints
+  shortName: string where length(shortName) >= 1 and length(shortName) <= 10
+  longText: string where length(longText) <= 1000
+  emailField: string where contains(emailField, "@") and endsWith(emailField, ".com")
+
+  # Numeric constraints
+  positiveInt: int where positiveInt > 0
+  percentage: decimal where percentage >= 0.0 and percentage <= 100.0
+  age: int where age >= 0 and age <= 150
+
+  # Date constraints
+  birthDate: date where birthDate <= today()
+  futureDate: date where futureDate >= today()
+  expiryDate: datetime
+
+  # Boolean and enum-like constraints
+  isActive: bool
+  status: string where status in ["active", "inactive", "pending"]
+end
+
+type ComplexConstraints
+  # Cross-field validation (represented as individual constraints)
+  minValue: int where minValue >= 0
+  maxValue: int where maxValue >= minValue  # This would be validated at runtime
+  range: string where contains(range, "-") and length(range) >= 3
+end
+
+intent VALIDATE_DATA
+  goal: "Validate complex data structures with edge case constraints"
+  inputs: "[
+    testData: ValidationTest,
+    complexData: ComplexConstraints
+  ]"
+  outputs: "[
+    isValid: bool,
+    errorMessages: string
+  ]"
+  evidence: "[validation_framework_v2]"
+  tags: "[validation, constraints, edge-cases]"
+end
+
+mapping VALIDATE_DATA -> "api POST /api/validate"
+  request: "ValidationRequest"
+  response: "ValidationResponse"
+end
+```
+
+## Expected Validation
+- ✅ Complex constraint expressions are parsed correctly
+- ✅ String functions (length, contains, startsWith, endsWith) work
+- ✅ Numeric range constraints are applied
+- ✅ Date comparisons with today() function work
+- ✅ Enum-style constraints with 'in' operator work

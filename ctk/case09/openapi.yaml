@@ -1,0 +1,216 @@
+openapi: 3.0.0
+info:
+  title: Fleet Management API
+  version: 1.0.0
+  description: API for testing complex nested type structures
+
+paths:
+  /api/fleets:
+    post:
+      summary: Register a new vehicle fleet with complex nested data
+      operationId: registerFleet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetRegistrationRequest'
+      responses:
+        '200':
+          description: Fleet registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetRegistrationResponse'
+
+components:
+  schemas:
+    GPSCoordinates:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - altitude
+      properties:
+        latitude:
+          type: number
+          minimum: -90.0
+          maximum: 90.0
+        longitude:
+          type: number
+          minimum: -180.0
+          maximum: 180.0
+        altitude:
+          type: number
+
+    Address:
+      type: object
+      required:
+        - street
+        - city
+        - state
+        - postalCode
+        - country
+        - coordinates
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+        coordinates:
+          $ref: '#/components/schemas/GPSCoordinates'
+
+    ContactInfo:
+      type: object
+      required:
+        - email
+        - phone
+        - address
+      properties:
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+
+    Person:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - contact
+        - dateOfBirth
+        - nationality
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        contact:
+          $ref: '#/components/schemas/ContactInfo'
+        dateOfBirth:
+          type: string
+          format: date
+        nationality:
+          type: string
+
+    InsurancePolicy:
+      type: object
+      required:
+        - policyNumber
+        - type
+        - coverageAmount
+        - premium
+        - startDate
+        - endDate
+      properties:
+        policyNumber:
+          type: string
+        type:
+          type: string
+          enum: [health, auto, home, life]
+        coverageAmount:
+          type: number
+          minimum: 0
+        premium:
+          type: number
+          minimum: 0
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    Vehicle:
+      type: object
+      required:
+        - vin
+        - make
+        - model
+        - year
+        - insurance
+      properties:
+        vin:
+          type: string
+          minLength: 17
+          maxLength: 17
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+          minimum: 1900
+          maximum: 2030
+        insurance:
+          $ref: '#/components/schemas/InsurancePolicy'
+
+    Driver:
+      type: object
+      required:
+        - person
+        - licenseNumber
+        - licenseExpiry
+        - vehicles
+      properties:
+        person:
+          $ref: '#/components/schemas/Person'
+        licenseNumber:
+          type: string
+        licenseExpiry:
+          type: string
+          format: date
+        vehicles:
+          $ref: '#/components/schemas/Vehicle'
+
+    Fleet:
+      type: object
+      required:
+        - id
+        - name
+        - owner
+        - drivers
+        - totalVehicles
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        owner:
+          $ref: '#/components/schemas/Person'
+        drivers:
+          $ref: '#/components/schemas/Driver'
+        totalVehicles:
+          type: integer
+          minimum: 0
+
+    FleetRegistrationRequest:
+      type: object
+      required:
+        - fleet
+      properties:
+        fleet:
+          $ref: '#/components/schemas/Fleet'
+
+    FleetRegistrationResponse:
+      type: object
+      required:
+        - fleetId
+        - registrationCertificate
+      properties:
+        fleetId:
+          type: string
+        registrationCertificate:
+          type: string

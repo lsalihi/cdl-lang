@@ -13,12 +13,31 @@ A European bank needs to process SEPA credit transfers with:
 ## CDL Specification
 
 ```cdl
+type Money
+  amount: decimal where amount >= 0
+  currency: string where currency == "EUR"
+end
+
+type SepaPaymentRequest
+  debtorIban: string
+  creditorIban: string
+  amount: Money
+  remittanceInfo: string
+  executionDate: date
+end
+
+type SepaPaymentResponse
+  paymentId: string
+  status: string
+  processingDate: datetime
+end
+
 intent PROCESS_SEPA_PAYMENT
   goal: "Process a SEPA credit transfer payment"
   inputs: "[
     debtorIban: string,
     creditorIban: string,
-    amount: Money(EUR),
+    amount: Money,
     remittanceInfo: string,
     executionDate: date
   ]"

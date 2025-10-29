@@ -1,0 +1,82 @@
+{
+  "Type Definition": {
+    "prefix": "type",
+    "body": [
+      "type ${1:TypeName}",
+      "  ${2:fieldName}: ${3:string}",
+      "end"
+    ],
+    "description": "Create a new type definition"
+  },
+  "Type Definition with Constraints": {
+    "prefix": "typec",
+    "body": [
+      "type ${1:TypeName}",
+      "  ${2:fieldName}: ${3:string|int|decimal} where ${4:constraint}",
+      "end"
+    ],
+    "description": "Create a type definition with constraints"
+  },
+  "Money Type": {
+    "prefix": "typemoney",
+    "body": [
+      "type Money",
+      "  amount: decimal where amount >= 0",
+      "  currency: string where currency == \"EUR\"",
+      "end"
+    ],
+    "description": "Create a Money type definition"
+  },
+  "Intent Block (Typed)": {
+    "prefix": "intent",
+    "body": [
+      "intent ${1:NAME}",
+      "  goal: \"${2:Describe the intent}\"",
+      "  inputs: \"[${3:param}: ${4:string}]\"",
+      "  outputs: \"[${5:result}: ${6:string}]\"",
+      "  evidence: \"[${7:evidence}]\"",
+      "  tags: \"[${8:tags}]\"",
+      "end"
+    ],
+    "description": "Create a new intent with typed parameters"
+  },
+  "Intent Block with Complex Types": {
+    "prefix": "intentc",
+    "body": [
+      "intent ${1:NAME}",
+      "  goal: \"${2:Describe the intent}\"",
+      "  inputs: \"[",
+      "    ${3:customer}: ${4:Customer},",
+      "    ${5:amount}: ${6:Money}",
+      "  ]\"",
+      "  outputs: \"[",
+      "    ${7:id}: ${8:string},",
+      "    ${9:status}: ${10:string}",
+      "  ]\"",
+      "  evidence: \"[${11:evidence}]\"",
+      "  tags: \"[${12:tags}]\"",
+      "end"
+    ],
+    "description": "Create a complex intent with multiple typed parameters"
+  },
+  "Rule Block": {
+    "prefix": "rule",
+    "body": [
+      "rule ${1:NAME}",
+      "  statement: \"${2:Describe the rule}\"",
+      "  applies_to: \"${3:INTENT}\"",
+      "  evidence: \"[${4:evidence}]\"",
+      "  type: \"${5:validation|business|regulatory}\"",
+      "end"
+    ]
+  },
+  "Mapping Block": {
+    "prefix": "mapping",
+    "body": [
+      "mapping ${1:INTENT} -> \"api ${2:POST} ${3:/api/v1/resource}\"",
+      "  request: \"${4:RequestType}\"",
+      "  response: \"${5:ResponseType}\"",
+      "end"
+    ]
+  }
+}

@@ -11,6 +11,8 @@ public class ASTBuilder extends CDLBaseListener {
     private Map<String, Object> currentMeta = new HashMap<>();
     private List<String> currentSteps = new ArrayList<>();
     private String currentTarget = "";
+    private List<TypedParameter> currentInputs = new ArrayList<>();
+    private List<TypedParameter> currentOutputs = new ArrayList<>();
 
     @Override
     public void enterIntent(CDLParser.IntentContext ctx) {
@@ -20,7 +22,10 @@ public class ASTBuilder extends CDLBaseListener {
     @Override
     public void exitIntent(CDLParser.IntentContext ctx) {
         String id = ctx.ID().getText();
-        statements.add(new Intent(id, new HashMap<>(currentMeta)));
+        // For phase 1, parse inputs/outputs from meta if they exist
+        List<TypedParameter> inputs = parseTypedParameters((String) currentMeta.get("inputs"));
+        List<TypedParameter> outputs = parseTypedParameters((String) currentMeta.get("outputs"));
+        statements.add(new Intent(id, new HashMap<>(currentMeta), inputs, outputs));
     }
 
     @Override
@@ -70,6 +75,30 @@ public class ASTBuilder extends CDLBaseListener {
     }
 
     @Override
+    public void enterTypeDef(CDLParser.TypeDefContext ctx) {
+        currentFields.clear();
+    }
+
+    @Override
+    public void exitTypeDef(CDLParser.TypeDefContext ctx) {
+        String id = ctx.ID().getText();
+        statements.add(new TypeDefinition(id, new ArrayList<>(currentFields)));
+    }
+
+    @Override
+    public void exitField(CDLParser.FieldContext ctx) {
+        String name = ctx.LOWER_ID().getText();
+        // For now, create a simple type reference from the first ID
+        String typeName = ctx.typeRef().ID().getText();
+        TypeReference typeRef = new TypeReference(typeName);
+        Expression constraint = null;
+        if (ctx.expression() != null) {
+            constraint = new Expression(ctx.expression().getText());
+        }
+        currentFields.add(new Field(name, typeRef, constraint));
+    }
+
+    @Override
     public void exitMeta(CDLParser.MetaContext ctx) {
         String key = ctx.key().getText();
         String value = ctx.value().getText();
@@ -79,15 +108,63 @@ public class ASTBuilder extends CDLBaseListener {
         currentMeta.put(key, value);
     }
 
-    @Override
-    public void exitStep(CDLParser.StepContext ctx) {
-        String step = ctx.getText();
-        currentSteps.add(step);
+    private List<TypedParameter> parseTypedParameters(String paramString) {
+        List<TypedParameter> params = new ArrayList<>();
+        if (paramString == null || paramString.trim().isEmpty()) {
+            return params;
+        }
+
+        // Remove surrounding brackets if present
+        paramString = paramString.trim();
+        if (paramString.startsWith("[") && paramString.endsWith("]")) {
+            paramString = paramString.substring(1, paramString.length() - 1);
+        }
+
+        // Split by comma
+        String[] paramParts = paramString.split(",");
+        for (String paramPart : paramParts) {
+            paramPart = paramPart.trim();
+            if (paramPart.isEmpty()) continue;
+
+            // Parse "name: Type" or "name: Type where constraint"
+            String[] parts = paramPart.split(":");
+            if (parts.length >= 2) {
+                String name = parts[0].trim();
+                String typePart = parts[1].trim();
+
+                // Check for constraint
+                Expression constraint = null;
+                if (typePart.contains(" where ")) {
+                    String[] typeConstraint = typePart.split(" where ", 2);
+                    typePart = typeConstraint[0].trim();
+                    constraint = new Expression(typeConstraint[1].trim());
+                }
+
+                // Parse type reference
+                TypeReference typeRef = parseTypeReference(typePart);
+                params.add(new TypedParameter(name, typeRef, constraint));
+            }
+        }
+
+        return params;
     }
 
-    public Program build(ParseTree tree) {
-        ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(this, tree);
-        return new Program(statements);
+    private TypeReference parseTypeReference(String typeString) {
+        // Simple parsing for phase 1
+        if (typeString.contains("(") && typeString.contains(")")) {
+            // Parameterized type like Money(EUR)
+            int parenStart = typeString.indexOf("(");
+            int parenEnd = typeString.indexOf(")");
+            String baseType = typeString.substring(0, parenStart).trim();
+            String paramString = typeString.substring(parenStart + 1, parenEnd).trim();
+
+            // For now, assume single parameter
+            TypeReference paramType = new TypeReference(paramString);
+            List<Parameter> params = Arrays.asList(new Parameter("", paramType));
+            return new TypeReference(baseType, params);
+        } else {
+            // Simple type
+            return new TypeReference(typeString);
+        }
     }
 }

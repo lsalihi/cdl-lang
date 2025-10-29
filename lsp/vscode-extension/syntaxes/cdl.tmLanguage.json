@@ -1,98 +1,69 @@
 {
-  "name": "CDL",
   "scopeName": "source.cdl",
   "patterns": [
     {
-      "include": "#comments"
+      "name": "keyword.control.cdl",
+      "match": "\\b(intent|rule|policy|flow|mapping|type|end)\\b"
     },
     {
-      "include": "#keywords"
+      "name": "keyword.other.cdl",
+      "match": "\\b(inputs|outputs|goal|description|evidence|tags|request|response|applies_to|expression|where|policies|trust)\\b"
     },
     {
-      "include": "#types"
+      "name": "keyword.operator.cdl",
+      "match": "\\b(and|or|not|in)\\b"
     },
     {
-      "include": "#strings"
+      "name": "keyword.control.constraint.cdl",
+      "match": "\\b(where)\\b"
     },
     {
-      "include": "#numbers"
+      "name": "storage.type.cdl",
+      "match": "\\b(string|int|decimal|bool|date|datetime|Email|Money)\\b"
     },
     {
-      "include": "#identifiers"
-    }
-  ],
-  "repository": {
-    "comments": {
-      "patterns": [
-        {
-          "name": "comment.line.number-sign.cdl",
-          "match": "#.*$"
-        },
-        {
-          "name": "comment.block.cdl",
-          "begin": "/\\*",
-          "end": "\\*/"
-        }
-      ]
+      "name": "support.function.cdl",
+      "match": "\\b(length|contains|startsWith|endsWith|today)\\b"
     },
-    "keywords": {
-      "patterns": [
-        {
-          "name": "keyword.control.cdl",
-          "match": "\\b(intent|rule|policy|flow|mapping|type|end)\\b"
-        },
-        {
-          "name": "keyword.other.cdl",
-          "match": "\\b(goal|inputs|outputs|evidence|tags|trust|statement|applies_to|test_hints|where|in|and|or|not)\\b"
-        }
-      ]
-    },
-    "types": {
-      "patterns": [
-        {
-          "name": "support.type.cdl",
-          "match": "\\b(string|int|decimal|bool|date|datetime|Money|Email|GeoPoint|GeoAddress)\\b"
-        },
-        {
-          "name": "support.type.cdl",
-          "match": "\\bMoney\\([^)]+\\)"
-        }
-      ]
-    },
-    "strings": {
+    {
       "name": "string.quoted.double.cdl",
       "begin": "\"",
-      "end": "\"",
-      "patterns": [
-        {
-          "name": "constant.character.escape.cdl",
-          "match": "\\\\."
-        }
-      ]
+      "end": "\""
     },
-    "numbers": {
-      "patterns": [
-        {
-          "name": "constant.numeric.float.cdl",
-          "match": "\\b\\d+\\.\\d+\\b"
-        },
-        {
-          "name": "constant.numeric.integer.cdl",
-          "match": "\\b\\d+\\b"
-        }
-      ]
+    {
+      "name": "comment.line.number-sign.cdl",
+      "begin": "#",
+      "end": "$"
     },
-    "identifiers": {
+    {
+      "name": "constant.language.boolean.cdl",
+      "match": "\\b(true|false)\\b"
+    },
+    {
+      "name": "constant.numeric.cdl",
+      "match": "\\b\\d+(?:\\.\\d+)?\\b"
+    },
+    {
+      "name": "entity.name.type.cdl",
+      "match": "\\b[A-Z][A-Z0-9_]*\\b"
+    },
+    {
+      "name": "variable.parameter.cdl",
+      "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
+    },
+    {
+      "name": "keyword.operator.comparison.cdl",
+      "match": "(==|!=|<=|>=|<|>)"
+    },
+    {
+      "name": "meta.type.constraint.cdl",
+      "begin": "\\bwhere\\b",
+      "end": "(?=\\bend\\b|\\n)",
       "patterns": [
         {
-          "name": "entity.name.type.cdl",
-          "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
-        },
-        {
-          "name": "variable.parameter.cdl",
-          "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
+          "include": "$self"
         }
       ]
     }
-  }
+  ]
 }

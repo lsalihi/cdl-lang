@@ -1,0 +1,162 @@
+openapi: 3.0.0
+info:
+  title: Type Definitions API
+  version: 1.0.0
+  description: API for testing type definitions and references
+
+paths:
+  /api/users:
+    post:
+      summary: Register a new user account
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegistrationResponse'
+
+  /api/orders:
+    post:
+      summary: Place a new order
+      operationId: placeOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '200':
+          description: Order placed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+
+components:
+  schemas:
+    Address:
+      type: object
+      required:
+        - street
+        - city
+        - postalCode
+        - country
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+
+    UserProfile:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - address
+        - createdAt
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/Address'
+        createdAt:
+          type: string
+          format: date-time
+
+    OrderItem:
+      type: object
+      required:
+        - productId
+        - name
+        - quantity
+        - unitPrice
+      properties:
+        productId:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        unitPrice:
+          type: number
+
+    Order:
+      type: object
+      required:
+        - id
+        - customerId
+        - items
+        - totalAmount
+        - orderDate
+      properties:
+        id:
+          type: string
+        customerId:
+          type: string
+        items:
+          $ref: '#/components/schemas/OrderItem'
+        totalAmount:
+          type: number
+          minimum: 0
+        orderDate:
+          type: string
+          format: date
+
+    UserRegistrationRequest:
+      type: object
+      required:
+        - profile
+      properties:
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+
+    UserRegistrationResponse:
+      type: object
+      required:
+        - userId
+        - confirmationToken
+      properties:
+        userId:
+          type: string
+        confirmationToken:
+          type: string
+
+    OrderRequest:
+      type: object
+      required:
+        - order
+      properties:
+        order:
+          $ref: '#/components/schemas/Order'
+
+    OrderResponse:
+      type: object
+      required:
+        - orderId
+        - estimatedDelivery
+      properties:
+        orderId:
+          type: string
+        estimatedDelivery:
+          type: string
+          format: date

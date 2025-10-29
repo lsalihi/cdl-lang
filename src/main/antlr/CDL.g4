@@ -6,7 +6,7 @@ package com.cdl;
 
 program: statement* EOF;
 
-statement: intent | rule | policy | flow | mapping;
+statement: intent | rule | policy | flow | mapping | typeDef;
 
 intent: 'intent' ID meta* 'end';
 
@@ -17,6 +17,30 @@ policy: 'policy' ID meta* 'end';
 flow: 'flow' ID step+ 'end';
 
 mapping: 'mapping' ID '->' target meta* 'end';
+
+typeDef: 'type' ID field* 'end';
+
+field: LOWER_ID ':' typeRef ('where' expression)?;
+
+typeRef: ID | parameterizedType;
+
+parameterizedType: ID '(' parameters ')';
+
+parameters: parameter (',' parameter)*;
+
+parameter: LOWER_ID ':' typeRef;
+
+expression: term (('and' | 'or') term)*;
+
+term: atom (comparisonOp atom)*;
+
+atom: LOWER_ID | NUMBER | STRING | functionCall;
+
+comparisonOp: '>' | '<' | '>=' | '<=' | '==' | '!=' | 'in';
+
+functionCall: LOWER_ID '(' arguments? ')';
+
+arguments: expression (',' expression)*;
 
 meta: key ':' value;
 

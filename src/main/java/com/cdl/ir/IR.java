@@ -4,8 +4,20 @@ import com.cdl.ast.*;
 import java.util.*;
 
 public class IR {
+    public List<TypeIR> types = new ArrayList<>();
     public List<IntentIR> intents = new ArrayList<>();
     public List<MappingIR> mappings = new ArrayList<>();
+
+    public static class TypeIR {
+        public String id;
+        public List<FieldIR> fields = new ArrayList<>();
+    }
+
+    public static class FieldIR {
+        public String name;
+        public String type;
+        public String constraint;
+    }
 
     public static class IntentIR {
         public String id;
@@ -25,13 +37,45 @@ public class IR {
     public static IR fromAST(Program program) {
         IR ir = new IR();
         for (Statement stmt : program.getStatements()) {
-            if (stmt instanceof Intent) {
+            if (stmt instanceof TypeDefinition) {
+                TypeDefinition typeDef = (TypeDefinition) stmt;
+                TypeIR tir = new TypeIR();
+                tir.id = typeDef.getId();
+                for (Field field : typeDef.getFields()) {
+                    FieldIR fir = new FieldIR();
+                    fir.name = field.getName();
+                    fir.type = field.getTypeRef().getName(); // Simplified for phase 1
+                    if (field.getConstraint() != null) {
+                        fir.constraint = field.getConstraint().getExpression();
+                    }
+                    tir.fields.add(fir);
+                }
+                ir.types.add(tir);
+            } else if (stmt instanceof Intent) {
                 Intent intent = (Intent) stmt;
                 IntentIR iir = new IntentIR();
                 iir.id = intent.getId();
                 Map<String, Object> meta = intent.getMeta();
                 iir.goal = (String) meta.get("goal");
-                // Parse inputs and outputs if possible, but for now skip
+                // Convert typed parameters to maps
+                for (TypedParameter param : intent.getInputs()) {
+                    Map<String, String> paramMap = new HashMap<>();
+                    paramMap.put("name", param.getName());
+                    paramMap.put("type", param.getTypeRef().getName());
+                    if (param.getConstraint() != null) {
+                        paramMap.put("constraint", param.getConstraint().getExpression());
+                    }
+                    iir.inputs.add(paramMap);
+                }
+                for (TypedParameter param : intent.getOutputs()) {
+                    Map<String, String> paramMap = new HashMap<>();
+                    paramMap.put("name", param.getName());
+                    paramMap.put("type", param.getTypeRef().getName());
+                    if (param.getConstraint() != null) {
+                        paramMap.put("constraint", param.getConstraint().getExpression());
+                    }
+                    iir.outputs.add(paramMap);
+                }
                 ir.intents.add(iir);
             } else if (stmt instanceof Mapping) {
                 Mapping mapping = (Mapping) stmt;

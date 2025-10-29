@@ -1,0 +1,60 @@
+# CTK Case07: Complex Type Reference Graphs
+
+This test case validates complex type reference graphs without circular dependencies.
+
+## CDL Specification
+
+```cdl
+type Address
+  street: string
+  city: string
+  country: string
+end
+
+type Contact
+  email: Email
+  phone: string
+  address: Address
+end
+
+type Department
+  id: string
+  name: string
+  manager: Employee
+end
+
+type Employee
+  id: string
+  name: string
+  contact: Contact
+  department: Department
+  reportsTo: Employee
+end
+
+type Company
+  id: string
+  name: string
+  address: Address
+  ceo: Employee
+  departments: Department
+end
+
+intent REGISTER_COMPANY
+  goal: "Register a new company with complex organizational structure"
+  inputs: "[company: Company]"
+  outputs: "[companyId: string, registrationNumber: string]"
+  evidence: "[company_registration_law]"
+  tags: "[company, organization, registration]"
+end
+
+mapping REGISTER_COMPANY -> "api POST /api/companies"
+  request: "CompanyRegistrationRequest"
+  response: "CompanyRegistrationResponse"
+end
+```
+
+## Expected Validation
+- ✅ Complex type graphs are handled correctly
+- ✅ Self-referencing types (Employee.reportsTo) work
+- ✅ Multiple references to same type work
+- ✅ No circular reference errors are detected
