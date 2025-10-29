@@ -1,0 +1,98 @@
+{
+  "name": "CDL",
+  "scopeName": "source.cdl",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#identifiers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.cdl",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.block.cdl",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.cdl",
+          "match": "\\b(intent|rule|policy|flow|mapping|type|end)\\b"
+        },
+        {
+          "name": "keyword.other.cdl",
+          "match": "\\b(goal|inputs|outputs|evidence|tags|trust|statement|applies_to|test_hints|where|in|and|or|not)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "support.type.cdl",
+          "match": "\\b(string|int|decimal|bool|date|datetime|Money|Email|GeoPoint|GeoAddress)\\b"
+        },
+        {
+          "name": "support.type.cdl",
+          "match": "\\bMoney\\([^)]+\\)"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.cdl",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.cdl",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.cdl",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.cdl",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "entity.name.type.cdl",
+          "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "variable.parameter.cdl",
+          "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    }
+  }
+}

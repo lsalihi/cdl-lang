@@ -1,0 +1,221 @@
+# CTK Case02: Basic Type System
+
+This test case validates the basic type system functionality including primitive types and type definitions.
+
+## CDL Specification
+
+```cdl
+type Person
+  id: string
+  name: string
+  age: int where age >= 0 and age <= 150
+  email: Email
+  isActive: bool
+end
+
+type Product
+  id: string
+  name: string
+  price: Money(EUR) where price > 0
+  inStock: bool
+end
+
+intent CREATE_USER
+  goal: "Create a new user account"
+  inputs: "[
+    person: Person,
+    password: string
+  ]"
+  outputs: "[
+    userId: string,
+    createdAt: datetime
+  ]"
+  evidence: "[user_registration_spec]"
+  tags: "[user, account]"
+end
+
+intent PURCHASE_PRODUCT
+  goal: "Purchase a product"
+  inputs: "[
+    userId: string,
+    productId: string,
+    quantity: int where quantity > 0
+  ]"
+  outputs: "[
+    orderId: string,
+    totalPrice: Money(EUR)
+  ]"
+  evidence: "[ecommerce_api_v2]"
+  tags: "[commerce, purchase]"
+end
+
+rule VALID_EMAIL_FORMAT
+  statement: "User email must be properly formatted"
+  applies_to: "CREATE_USER"
+  evidence: "[rfc5322_email_standard]"
+  test_hints: "Test with various email formats"
+  type: "validation"
+end
+
+rule SUFFICIENT_STOCK
+  statement: "Product must be in stock before purchase"
+  applies_to: "PURCHASE_PRODUCT"
+  evidence: "[inventory_management_rules]"
+  test_hints: "Verify stock checking logic"
+  type: "business"
+end
+
+mapping CREATE_USER -> "api POST /api/users"
+  request: "CreateUserRequest"
+  response: "CreateUserResponse"
+end
+
+mapping PURCHASE_PRODUCT -> "api POST /api/orders"
+  request: "PurchaseRequest"
+  response: "PurchaseResponse"
+end
+```
+
+## Expected OpenAPI Output
+
+```yaml
+openapi: 3.0.0
+info:
+  title: User and Product Management API
+  version: 1.0.0
+  description: API for user account creation and product purchasing
+
+paths:
+  /api/users:
+    post:
+      summary: Create a new user account
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+
+  /api/orders:
+    post:
+      summary: Purchase a product
+      operationId: purchaseProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseRequest'
+      responses:
+        '200':
+          description: Purchase completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseResponse'
+
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      required:
+        - person
+        - password
+      properties:
+        person:
+          $ref: '#/components/schemas/Person'
+        password:
+          type: string
+
+    CreateUserResponse:
+      type: object
+      required:
+        - userId
+        - createdAt
+      properties:
+        userId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    PurchaseRequest:
+      type: object
+      required:
+        - userId
+        - productId
+        - quantity
+      properties:
+        userId:
+          type: string
+        productId:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+
+    PurchaseResponse:
+      type: object
+      required:
+        - orderId
+        - totalPrice
+      properties:
+        orderId:
+          type: string
+        totalPrice:
+          $ref: '#/components/schemas/Money'
+
+    Person:
+      type: object
+      required:
+        - id
+        - name
+        - age
+        - email
+        - isActive
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+        email:
+          type: string
+          format: email
+        isActive:
+          type: boolean
+
+    Money:
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+          enum: [EUR]
+```
+
+## Validation Criteria
+
+✅ **Type Definitions**: Person and Product types are properly defined
+✅ **Type References**: Intent parameters reference defined types
+✅ **Constraints**: Age and price constraints are enforced
+✅ **Extended Types**: Email and Money(EUR) types are recognized
+✅ **OpenAPI Generation**: Complex schemas are generated correctly
+✅ **Schema Validation**: Generated schemas match type definitions

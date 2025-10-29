@@ -1,0 +1,132 @@
+{
+  "name": "cdl-vscode",
+  "displayName": "CDL Language Support",
+  "description": "Language support for Cognitive Domain Language (CDL)",
+  "version": "0.6.0-alpha",
+  "publisher": "pulsar",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:cdl"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "cdl",
+        "aliases": [
+          "CDL",
+          "cdl"
+        ],
+        "extensions": [
+          ".cdl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cdl",
+        "scopeName": "source.cdl",
+        "path": "./syntaxes/cdl.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "cdl.generateOpenAPI",
+        "title": "CDL: Generate OpenAPI",
+        "category": "CDL"
+      },
+      {
+        "command": "cdl.lint",
+        "title": "CDL: Lint",
+        "category": "CDL"
+      },
+      {
+        "command": "cdl.format",
+        "title": "CDL: Format",
+        "category": "CDL"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceExtname == .cdl",
+          "command": "cdl.generateOpenAPI",
+          "group": "cdl@1"
+        },
+        {
+          "when": "resourceExtname == .cdl",
+          "command": "cdl.lint",
+          "group": "cdl@2"
+        },
+        {
+          "when": "resourceExtname == .cdl",
+          "command": "cdl.format",
+          "group": "cdl@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceExtname == .cdl",
+          "command": "cdl.generateOpenAPI",
+          "group": "cdl@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CDL",
+      "properties": {
+        "cdl.cli.path": {
+          "type": "string",
+          "default": "cdl",
+          "description": "Path to CDL CLI executable"
+        },
+        "cdl.lint.onSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run lint on save"
+        },
+        "cdl.format.onSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Format document on save"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "eslint": "^8.28.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lsalihi/cdl-lang.git"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lsalihi/cdl-lang/issues"
+  },
+  "homepage": "https://lsalihi.github.io/cdl-lang/"
+}

@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: User and Product Management API
+  version: 1.0.0
+  description: API for user account creation and product purchasing
+
+paths:
+  /api/users:
+    post:
+      summary: Create a new user account
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+
+  /api/orders:
+    post:
+      summary: Purchase a product
+      operationId: purchaseProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseRequest'
+      responses:
+        '200':
+          description: Purchase completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseResponse'
+
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      required:
+        - person
+        - password
+      properties:
+        person:
+          $ref: '#/components/schemas/Person'
+        password:
+          type: string
+
+    CreateUserResponse:
+      type: object
+      required:
+        - userId
+        - createdAt
+      properties:
+        userId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    PurchaseRequest:
+      type: object
+      required:
+        - userId
+        - productId
+        - quantity
+      properties:
+        userId:
+          type: string
+        productId:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+
+    PurchaseResponse:
+      type: object
+      required:
+        - orderId
+        - totalPrice
+      properties:
+        orderId:
+          type: string
+        totalPrice:
+          $ref: '#/components/schemas/Money'
+
+    Person:
+      type: object
+      required:
+        - id
+        - name
+        - age
+        - email
+        - isActive
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+        email:
+          type: string
+          format: email
+        isActive:
+          type: boolean
+
+    Money:
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+          enum: [EUR]
