@@ -1,0 +1,225 @@
+# Healthcare Example: Patient Data Anonymization
+
+This example shows how CDL can model healthcare data privacy requirements, specifically GDPR-compliant patient data anonymization for research purposes.
+
+## Business Context
+
+A hospital research department needs to anonymize patient data for clinical trials while maintaining:
+- GDPR compliance
+- Medical data integrity
+- Research usability
+- Audit trails
+
+## CDL Specification
+
+```cdl
+intent ANONYMIZE_PATIENT_DATA
+  goal: "Anonymize patient data for research while preserving medical value"
+  inputs: "[
+    patientRecord: PatientRecord,
+    researchPurpose: string,
+    retentionPeriod: int
+  ]"
+  outputs: "[
+    anonymizedRecord: AnonymizedPatientRecord,
+    auditTrail: AuditEntry,
+    consentReference: string
+  ]"
+  evidence: "[
+    gdpr_article_89,
+    clinical_trials_regulation_eu_536_2014,
+    hospital_data_privacy_policy_v3
+  ]"
+  tags: "[healthcare, gdpr, privacy, research]"
+end
+
+rule CONSENT_MUST_EXIST
+  statement: "Patient consent must be obtained and documented"
+  applies_to: "ANONYMIZE_PATIENT_DATA"
+  evidence: "[gdpr_article_6_1_a, gdpr_article_9_2_a]"
+  test_hints: "Missing consent should result in rejection"
+  type: "privacy"
+end
+
+rule MINIMUM_DATA_SET
+  statement: "Only necessary data for research purpose should be retained"
+  applies_to: "ANONYMIZE_PATIENT_DATA"
+  evidence: "[gdpr_principle_4_1, data_minimization_guideline]"
+  test_hints: "Verify only research-relevant fields are present"
+  type: "privacy"
+end
+
+rule PSEUDONYMIZATION_APPLIED
+  statement: "Direct identifiers must be replaced with pseudonyms"
+  applies_to: "ANONYMIZE_PATIENT_DATA"
+  evidence: "[gdpr_article_4_5, gdpr_recital_26]"
+  test_hints: "Check that names, addresses, IDs are pseudonymized"
+  type: "privacy"
+end
+
+policy CLINICAL_TRIAL_ETHICS
+  statement: "Data use must comply with clinical trial ethical standards"
+  applies_to: "ANONYMIZE_PATIENT_DATA"
+  evidence: "[helsinki_declaration_2013, ich_gcp_e6_r2]"
+  type: "ethical"
+end
+
+mapping ANONYMIZE_PATIENT_DATA -> "api POST /api/research/anonymize"
+  request: "AnonymizationRequest"
+  response: "AnonymizationResponse"
+end
+```
+
+## Generated OpenAPI
+
+```yaml
+openapi: 3.0.0
+info:
+  title: Healthcare Research Data API
+  version: 1.0.0
+  description: API for GDPR-compliant patient data anonymization
+
+paths:
+  /api/research/anonymize:
+    post:
+      summary: Anonymize patient data for research while preserving medical value
+      operationId: anonymizePatientData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnonymizationRequest'
+      responses:
+        '200':
+          description: Data successfully anonymized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnonymizationResponse'
+        '403':
+          description: Consent missing or invalid
+
+components:
+  schemas:
+    AnonymizationRequest:
+      type: object
+      required:
+        - patientRecord
+        - researchPurpose
+        - retentionPeriod
+      properties:
+        patientRecord:
+          $ref: '#/components/schemas/PatientRecord'
+        researchPurpose:
+          type: string
+          description: Purpose of research (e.g., "cardiovascular_study")
+        retentionPeriod:
+          type: integer
+          minimum: 1
+          maximum: 3650
+          description: Days to retain data
+
+    AnonymizationResponse:
+      type: object
+      required:
+        - anonymizedRecord
+        - auditTrail
+        - consentReference
+      properties:
+        anonymizedRecord:
+          $ref: '#/components/schemas/AnonymizedPatientRecord'
+        auditTrail:
+          $ref: '#/components/schemas/AuditEntry'
+        consentReference:
+          type: string
+          description: Reference to patient consent record
+
+    PatientRecord:
+      type: object
+      properties:
+        patientId:
+          type: string
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        address:
+          type: string
+        medicalHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicalEvent'
+
+    AnonymizedPatientRecord:
+      type: object
+      properties:
+        pseudonymId:
+          type: string
+          description: Pseudonymized identifier
+        ageGroup:
+          type: string
+          enum: ["0-17", "18-64", "65+"]
+        region:
+          type: string
+          description: Geographic region (no specific address)
+        medicalHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicalEvent'
+
+    MedicalEvent:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        diagnosis:
+          type: string
+        treatment:
+          type: string
+
+    AuditEntry:
+      type: object
+      required:
+        - timestamp
+        - action
+        - responsibleParty
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        action:
+          type: string
+          enum: ["ANONYMIZE", "ACCESS", "DELETE"]
+        responsibleParty:
+          type: string
+          description: Researcher or system identifier
+```
+
+## Benefits
+
+### For Healthcare Providers
+- **Regulatory Compliance**: Automated GDPR compliance checking
+- **Research Enablement**: Safe data sharing for clinical trials
+- **Audit Trails**: Complete traceability of data handling
+
+### For Researchers
+- **Data Access**: Anonymized data for legitimate research
+- **Quality Assurance**: Consistent anonymization across studies
+- **Ethical Compliance**: Built-in ethical review checkpoints
+
+### For Patients
+- **Privacy Protection**: Strong anonymization guarantees
+- **Consent Control**: Clear consent management
+- **Transparency**: Understanding of data usage
+
+## Advanced Features (Future)
+
+This example could be extended with:
+- Differential privacy algorithms
+- K-anonymity validation rules
+- Consent management workflows
+- Data retention policies
+- Cross-border data transfer rules

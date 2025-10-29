@@ -1,0 +1,187 @@
+# Banking Example: SEPA Payment Processing
+
+This example demonstrates how CDL can model a SEPA (Single Euro Payments Area) payment processing system.
+
+## Business Context
+
+A European bank needs to process SEPA credit transfers with:
+- Regulatory compliance (PSD2, GDPR)
+- Fraud detection
+- Multi-currency support
+- Real-time processing
+
+## CDL Specification
+
+```cdl
+intent PROCESS_SEPA_PAYMENT
+  goal: "Process a SEPA credit transfer payment"
+  inputs: "[
+    debtorIban: string,
+    creditorIban: string,
+    amount: Money(EUR),
+    remittanceInfo: string,
+    executionDate: date
+  ]"
+  outputs: "[
+    paymentId: string,
+    status: string,
+    processingDate: datetime
+  ]"
+  evidence: "[
+    sepa_rulebook_2023,
+    psd2_regulation_eu_2018_843,
+    bank_internal_procedure_pp_001
+  ]"
+  tags: "[banking, sepa, payment, regulatory]"
+end
+
+rule IBAN_MUST_BE_VALID
+  statement: "Both debtor and creditor IBANs must be valid"
+  applies_to: "PROCESS_SEPA_PAYMENT"
+  evidence: "[iban_registry_iso_13616]"
+  test_hints: "Invalid IBAN should return 400 with error code IBAN_INVALID"
+  type: "validation"
+end
+
+rule AMOUNT_WITHIN_LIMITS
+  statement: "Payment amount must be between 0.01 EUR and 1,000,000 EUR"
+  applies_to: "PROCESS_SEPA_PAYMENT"
+  evidence: "[sepa_limitations_eba_2017]"
+  test_hints: "Amounts outside limits should be rejected"
+  type: "business"
+end
+
+rule SAME_CURRENCY_REQUIRED
+  statement: "SEPA payments must be in EUR only"
+  applies_to: "PROCESS_SEPA_PAYMENT"
+  evidence: "[sepa_rulebook_2_3]"
+  test_hints: "Non-EUR currencies should be rejected"
+  type: "regulatory"
+end
+
+policy GDPR_DATA_MINIMIZATION
+  statement: "Only necessary personal data should be processed"
+  applies_to: "PROCESS_SEPA_PAYMENT"
+  evidence: "[gdpr_article_5_1_c]"
+  type: "privacy"
+end
+
+mapping PROCESS_SEPA_PAYMENT -> "api POST /api/sepa/payments"
+  request: "SepaPaymentRequest"
+  response: "SepaPaymentResponse"
+end
+```
+
+## Generated OpenAPI
+
+```yaml
+openapi: 3.0.0
+info:
+  title: SEPA Payment API
+  version: 1.0.0
+  description: API for processing SEPA credit transfer payments
+
+paths:
+  /api/sepa/payments:
+    post:
+      summary: Process a SEPA credit transfer payment
+      operationId: processSepaPayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SepaPaymentRequest'
+      responses:
+        '200':
+          description: Payment processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SepaPaymentResponse'
+        '400':
+          description: Invalid payment data
+
+components:
+  schemas:
+    SepaPaymentRequest:
+      type: object
+      required:
+        - debtorIban
+        - creditorIban
+        - amount
+        - executionDate
+      properties:
+        debtorIban:
+          type: string
+          description: IBAN of the debtor account
+        creditorIban:
+          type: string
+          description: IBAN of the creditor account
+        amount:
+          $ref: '#/components/schemas/Money'
+        remittanceInfo:
+          type: string
+          description: Payment reference information
+        executionDate:
+          type: string
+          format: date
+          description: Date when payment should be executed
+
+    SepaPaymentResponse:
+      type: object
+      required:
+        - paymentId
+        - status
+        - processingDate
+      properties:
+        paymentId:
+          type: string
+          description: Unique payment identifier
+        status:
+          type: string
+          enum: [PENDING, PROCESSED, REJECTED]
+        processingDate:
+          type: string
+          format: date-time
+          description: When payment was processed
+
+    Money:
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+          enum: [EUR]
+```
+
+## Benefits
+
+### For Business Teams
+- **Clear Requirements**: Intent and rules are self-documenting
+- **Regulatory Compliance**: Evidence links ensure auditability
+- **Change Management**: Single source of truth for all stakeholders
+
+### For Development Teams
+- **API Generation**: Automatic OpenAPI spec from business logic
+- **Validation**: Rules become executable constraints
+- **Testing**: CTK generates test cases from specifications
+
+### For Operations
+- **Monitoring**: Business-level metrics from intent definitions
+- **Compliance**: Automated policy checking
+- **Auditing**: Traceable evidence for all decisions
+
+## Next Steps
+
+This example can be extended with:
+- Fraud detection rules
+- Multi-bank routing logic
+- Regulatory reporting requirements
+- Real-time payment status updates
