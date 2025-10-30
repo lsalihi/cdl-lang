@@ -1,9 +1,5 @@
 grammar CDL;
 
-@header {
-package com.cdl;
-}
-
 program: statement* EOF;
 
 statement: intent | rule | policy | flow | mapping | typeDef;
