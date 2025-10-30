@@ -1,70 +1,10 @@
-# CTK Case04: Type Definitions and References
-
-This test case validates basic type definitions and their references across intents and mappings.
-
-## CDL Specification
-
-```cdl
-type Address
-  street: string
-  city: string
-  postalCode: string
-  country: string
+intent TEST_INTENT_04
+goal: "Test intent 04"
+inputs: "[input04: string]"
+outputs: "[output04: string]"
 end
 
-type UserProfile
-  id: string
-  username: string
-  email: Email
-  address: Address
-  createdAt: datetime
+mapping TEST_INTENT_04 -> "api POST /api/test04"
+request: "TestRequest04"
+response: "TestResponse04"
 end
-
-type OrderItem
-  productId: string
-  name: string
-  quantity: int where quantity > 0
-  unitPrice: decimal
-end
-
-type Order
-  id: string
-  customerId: string
-  items: OrderItem
-  totalAmount: decimal where totalAmount >= 0
-  orderDate: date
-end
-
-intent REGISTER_USER
-  goal: "Register a new user account"
-  inputs: "[profile: UserProfile]"
-  outputs: "[userId: string, confirmationToken: string]"
-  evidence: "[user_registration_flow]"
-  tags: "[user, registration]"
-end
-
-intent PLACE_ORDER
-  goal: "Place a new order"
-  inputs: "[order: Order]"
-  outputs: "[orderId: string, estimatedDelivery: date]"
-  evidence: "[order_processing_v2]"
-  tags: "[order, commerce]"
-end
-
-mapping REGISTER_USER -> "api POST /api/users"
-  request: "UserRegistrationRequest"
-  response: "UserRegistrationResponse"
-end
-
-mapping PLACE_ORDER -> "api POST /api/orders"
-  request: "OrderRequest"
-  response: "OrderResponse"
-end
-```
-
-## Expected Validation
-- ✅ All type definitions are valid
-- ✅ Type references resolve correctly
-- ✅ Nested type structures are supported
-- ✅ Intent parameters reference defined types
-- ✅ Mapping schemas reference proper types

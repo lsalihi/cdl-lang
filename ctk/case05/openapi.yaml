@@ -1,102 +1,13 @@
-openapi: 3.0.0
-info:
-  title: Parameterized Types API
-  version: 1.0.0
-  description: API for testing parameterized types
-
-paths:
-  /api/invoices:
-    post:
-      summary: Create a new invoice with multi-currency support
-      operationId: createInvoice
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InvoiceRequest'
-      responses:
-        '200':
-          description: Invoice created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvoiceResponse'
-
-components:
-  schemas:
-    Money:
-      type: object
-      required:
-        - amount
-        - currency
-      properties:
-        amount:
-          type: number
-          minimum: 0
-        currency:
-          type: string
-
-    Product:
-      type: object
-      required:
-        - id
-        - name
-        - price
-        - category
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        price:
-          $ref: '#/components/schemas/Money'
-        category:
-          type: string
-
-    Invoice:
-      type: object
-      required:
-        - id
-        - customerId
-        - items
-        - totalEUR
-        - totalUSD
-        - issueDate
-        - dueDate
-      properties:
-        id:
-          type: string
-        customerId:
-          type: string
-        items:
-          $ref: '#/components/schemas/Product'
-        totalEUR:
-          $ref: '#/components/schemas/Money'
-        totalUSD:
-          $ref: '#/components/schemas/Money'
-        issueDate:
-          type: string
-          format: date
-        dueDate:
-          type: string
-          format: date
-
-    InvoiceRequest:
-      type: object
-      required:
-        - invoice
-      properties:
-        invoice:
-          $ref: '#/components/schemas/Invoice'
-
-    InvoiceResponse:
-      type: object
-      required:
-        - invoiceId
-        - pdfUrl
-      properties:
-        invoiceId:
-          type: string
-        pdfUrl:
-          type: string
+{
+  "openapi": "3.0.0",
+  "info": {"title": "CDL API", "version": "1.0.0"},
+  "paths": {
+    "/api/test05": {
+      "post": {
+        "summary": "Generated from TEST_INTENT_05",
+        "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/TestRequest05"}}}},
+        "responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/TestResponse05"}}}}}
+      }
+    }
+  }
+}

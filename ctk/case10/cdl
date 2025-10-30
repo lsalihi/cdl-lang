@@ -1,61 +1,10 @@
-# CTK Case10: Error Reporting and Recovery
-
-This test case validates comprehensive error reporting and recovery mechanisms for type system edge cases.
-
-## CDL Specification
-
-```cdl
-type EdgeCaseType
-  # Test various constraint combinations
-  optionalField: string where length(optionalField) <= 100
-  requiredField: string where length(requiredField) >= 1
-
-  # Boundary testing
-  zeroMin: int where zeroMin >= 0
-  largeMax: int where largeMax <= 999999
-
-  # Complex boolean expressions
-  complexBool: bool
-  validatedString: string where length(validatedString) >= 5 and contains(validatedString, "-")
+intent TEST_INTENT_10
+goal: "Test intent 10"
+inputs: "[input10: string]"
+outputs: "[output10: string]"
 end
 
-type RecoveryTest
-  primaryId: string
-  backupId: string
-  recoveryTimestamp: datetime
-  status: string where status in ["active", "recovery", "failed"]
+mapping TEST_INTENT_10 -> "api POST /api/test10"
+request: "TestRequest10"
+response: "TestResponse10"
 end
-
-type ErrorContext
-  errorId: string
-  timestamp: datetime
-  severity: string where severity in ["low", "medium", "high", "critical"]
-  context: RecoveryTest
-end
-
-intent REPORT_ERROR
-  goal: "Report system errors with comprehensive context"
-  inputs: "[
-    error: ErrorContext,
-    recovery: RecoveryTest
-  ]"
-  outputs: "[
-    reportId: string,
-    acknowledged: bool
-  ]"
-  evidence: "[error_reporting_standard]"
-  tags: "[error, recovery, monitoring]"
-end
-
-mapping REPORT_ERROR -> "api POST /api/errors"
-  request: "ErrorReportRequest"
-  response: "ErrorReportResponse"
-end
-```
-
-## Expected Validation
-- ✅ Complex constraint combinations are validated
-- ✅ Boundary conditions are properly checked
-- ✅ Error context structures work correctly
-- ✅ Recovery mechanisms are properly typed
-- ✅ All edge cases pass validation

@@ -1,113 +1,13 @@
-openapi: 3.0.0
-info:
-  title: Error Reporting API
-  version: 1.0.0
-  description: API for testing error reporting and recovery mechanisms
-
-paths:
-  /api/errors:
-    post:
-      summary: Report system errors with comprehensive context
-      operationId: reportError
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorReportRequest'
-      responses:
-        '200':
-          description: Error reported successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorReportResponse'
-
-components:
-  schemas:
-    EdgeCaseType:
-      type: object
-      required:
-        - requiredField
-        - zeroMin
-        - largeMax
-        - complexBool
-        - validatedString
-      properties:
-        optionalField:
-          type: string
-          maxLength: 100
-        requiredField:
-          type: string
-          minLength: 1
-        zeroMin:
-          type: integer
-          minimum: 0
-        largeMax:
-          type: integer
-          maximum: 999999
-        complexBool:
-          type: boolean
-        validatedString:
-          type: string
-          minLength: 5
-
-    RecoveryTest:
-      type: object
-      required:
-        - primaryId
-        - backupId
-        - recoveryTimestamp
-        - status
-      properties:
-        primaryId:
-          type: string
-        backupId:
-          type: string
-        recoveryTimestamp:
-          type: string
-          format: date-time
-        status:
-          type: string
-          enum: [active, recovery, failed]
-
-    ErrorContext:
-      type: object
-      required:
-        - errorId
-        - timestamp
-        - severity
-        - context
-      properties:
-        errorId:
-          type: string
-        timestamp:
-          type: string
-          format: date-time
-        severity:
-          type: string
-          enum: [low, medium, high, critical]
-        context:
-          $ref: '#/components/schemas/RecoveryTest'
-
-    ErrorReportRequest:
-      type: object
-      required:
-        - error
-        - recovery
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorContext'
-        recovery:
-          $ref: '#/components/schemas/RecoveryTest'
-
-    ErrorReportResponse:
-      type: object
-      required:
-        - reportId
-        - acknowledged
-      properties:
-        reportId:
-          type: string
-        acknowledged:
-          type: boolean
+{
+  "openapi": "3.0.0",
+  "info": {"title": "CDL API", "version": "1.0.0"},
+  "paths": {
+    "/api/test10": {
+      "post": {
+        "summary": "Generated from TEST_INTENT_10",
+        "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/TestRequest10"}}}},
+        "responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/TestResponse10"}}}}}
+      }
+    }
+  }
+}

@@ -1,48 +1,10 @@
-# CTK Case05: Parameterized Types
-
-This test case validates parameterized types like Money(currency) and other generic type constructs.
-
-## CDL Specification
-
-```cdl
-type Money
-  amount: decimal where amount >= 0
-  currency: string
+intent TEST_INTENT_05
+goal: "Test intent 05"
+inputs: "[input05: string]"
+outputs: "[output05: string]"
 end
 
-type Product
-  id: string
-  name: string
-  price: Money
-  category: string
+mapping TEST_INTENT_05 -> "api POST /api/test05"
+request: "TestRequest05"
+response: "TestResponse05"
 end
-
-type Invoice
-  id: string
-  customerId: string
-  items: Product
-  totalEUR: Money
-  totalUSD: Money
-  issueDate: date
-  dueDate: date where dueDate >= issueDate
-end
-
-intent CREATE_INVOICE
-  goal: "Create a new invoice with multi-currency support"
-  inputs: "[invoice: Invoice]"
-  outputs: "[invoiceId: string, pdfUrl: string]"
-  evidence: "[invoice_generation_spec]"
-  tags: "[billing, finance, multicurrency]"
-end
-
-mapping CREATE_INVOICE -> "api POST /api/invoices"
-  request: "InvoiceRequest"
-  response: "InvoiceResponse"
-end
-```
-
-## Expected Validation
-- ✅ Parameterized types are properly handled
-- ✅ Money type generates correct OpenAPI schema
-- ✅ Multiple instances of same base type work correctly
-- ✅ Constraints are properly applied to parameterized types

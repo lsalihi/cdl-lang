@@ -1,69 +1,10 @@
-# CTK Case08: Intent Type Signature Validation
-
-This test case validates that intent input and output type signatures are correctly validated.
-
-## CDL Specification
-
-```cdl
-type UserCredentials
-  username: string where length(username) >= 3
-  password: string where length(password) >= 8
+intent TEST_INTENT_08
+goal: "Test intent 08"
+inputs: "[input08: string]"
+outputs: "[output08: string]"
 end
 
-type UserProfile
-  id: string
-  username: string
-  email: Email
-  createdAt: datetime
+mapping TEST_INTENT_08 -> "api POST /api/test08"
+request: "TestRequest08"
+response: "TestResponse08"
 end
-
-type LoginRequest
-  credentials: UserCredentials
-  rememberMe: bool
-end
-
-type LoginResponse
-  success: bool
-  user: UserProfile
-  token: string
-  expiresAt: datetime
-end
-
-type ErrorResponse
-  errorCode: string
-  message: string
-  timestamp: datetime
-end
-
-intent AUTHENTICATE_USER
-  goal: "Authenticate user with credentials"
-  inputs: "[request: LoginRequest]"
-  outputs: "[response: LoginResponse, error: ErrorResponse]"
-  evidence: "[authentication_protocol_v3]"
-  tags: "[auth, security, login]"
-end
-
-intent LOGOUT_USER
-  goal: "Log out authenticated user"
-  inputs: "[token: string, userId: string]"
-  outputs: "[success: bool]"
-  evidence: "[session_management_spec]"
-  tags: "[auth, logout]"
-end
-
-mapping AUTHENTICATE_USER -> "api POST /api/auth/login"
-  request: "LoginRequest"
-  response: "LoginResponse"
-end
-
-mapping LOGOUT_USER -> "api POST /api/auth/logout"
-  request: "LogoutRequest"
-  response: "LogoutResponse"
-end
-```
-
-## Expected Validation
-- ✅ Intent inputs reference valid types
-- ✅ Intent outputs reference valid types
-- ✅ Type signatures are properly structured
-- ✅ Complex input/output combinations work

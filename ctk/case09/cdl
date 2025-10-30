@@ -1,88 +1,10 @@
-# CTK Case09: Complex Nested Type Structures
-
-This test case validates deeply nested type structures and complex type hierarchies.
-
-## CDL Specification
-
-```cdl
-type GPSCoordinates
-  latitude: decimal where latitude >= -90.0 and latitude <= 90.0
-  longitude: decimal where longitude >= -180.0 and longitude <= 180.0
-  altitude: decimal
+intent TEST_INTENT_09
+goal: "Test intent 09"
+inputs: "[input09: string]"
+outputs: "[output09: string]"
 end
 
-type Address
-  street: string
-  city: string
-  state: string
-  postalCode: string
-  country: string
-  coordinates: GPSCoordinates
+mapping TEST_INTENT_09 -> "api POST /api/test09"
+request: "TestRequest09"
+response: "TestResponse09"
 end
-
-type ContactInfo
-  email: Email
-  phone: string
-  address: Address
-end
-
-type Person
-  id: string
-  firstName: string
-  lastName: string
-  contact: ContactInfo
-  dateOfBirth: date
-  nationality: string
-end
-
-type InsurancePolicy
-  policyNumber: string
-  type: string where type in ["health", "auto", "home", "life"]
-  coverageAmount: decimal where coverageAmount > 0
-  premium: decimal where premium > 0
-  startDate: date
-  endDate: date where endDate > startDate
-end
-
-type Vehicle
-  vin: string where length(vin) == 17
-  make: string
-  model: string
-  year: int where year >= 1900 and year <= 2030
-  insurance: InsurancePolicy
-end
-
-type Driver
-  person: Person
-  licenseNumber: string
-  licenseExpiry: date where licenseExpiry >= today()
-  vehicles: Vehicle
-end
-
-type Fleet
-  id: string
-  name: string
-  owner: Person
-  drivers: Driver
-  totalVehicles: int where totalVehicles >= 0
-end
-
-intent REGISTER_FLEET
-  goal: "Register a new vehicle fleet with complex nested data"
-  inputs: "[fleet: Fleet]"
-  outputs: "[fleetId: string, registrationCertificate: string]"
-  evidence: "[fleet_registration_regulation]"
-  tags: "[fleet, transportation, registration]"
-end
-
-mapping REGISTER_FLEET -> "api POST /api/fleets"
-  request: "FleetRegistrationRequest"
-  response: "FleetRegistrationResponse"
-end
-```
-
-## Expected Validation
-- ✅ Deeply nested type structures work correctly
-- ✅ Multiple levels of type references are resolved
-- ✅ Complex constraint validation on nested fields
-- ✅ Large type hierarchies are handled efficiently

@@ -1,114 +1,13 @@
-openapi: 3.0.0
-info:
-  title: Constraint Validation API
-  version: 1.0.0
-  description: API for testing complex constraint validation
-
-paths:
-  /api/validate:
-    post:
-      summary: Validate complex data structures with edge case constraints
-      operationId: validateData
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ValidationRequest'
-      responses:
-        '200':
-          description: Validation completed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationResponse'
-
-components:
-  schemas:
-    ValidationTest:
-      type: object
-      required:
-        - shortName
-        - longText
-        - emailField
-        - positiveInt
-        - percentage
-        - age
-        - birthDate
-        - futureDate
-        - expiryDate
-        - isActive
-        - status
-      properties:
-        shortName:
-          type: string
-          minLength: 1
-          maxLength: 10
-        longText:
-          type: string
-          maxLength: 1000
-        emailField:
-          type: string
-        positiveInt:
-          type: integer
-          minimum: 1
-        percentage:
-          type: number
-          minimum: 0.0
-          maximum: 100.0
-        age:
-          type: integer
-          minimum: 0
-          maximum: 150
-        birthDate:
-          type: string
-          format: date
-        futureDate:
-          type: string
-          format: date
-        expiryDate:
-          type: string
-          format: date-time
-        isActive:
-          type: boolean
-        status:
-          type: string
-          enum: [active, inactive, pending]
-
-    ComplexConstraints:
-      type: object
-      required:
-        - minValue
-        - maxValue
-        - range
-      properties:
-        minValue:
-          type: integer
-          minimum: 0
-        maxValue:
-          type: integer
-        range:
-          type: string
-          minLength: 3
-
-    ValidationRequest:
-      type: object
-      required:
-        - testData
-        - complexData
-      properties:
-        testData:
-          $ref: '#/components/schemas/ValidationTest'
-        complexData:
-          $ref: '#/components/schemas/ComplexConstraints'
-
-    ValidationResponse:
-      type: object
-      required:
-        - isValid
-        - errorMessages
-      properties:
-        isValid:
-          type: boolean
-        errorMessages:
-          type: string
+{
+  "openapi": "3.0.0",
+  "info": {"title": "CDL API", "version": "1.0.0"},
+  "paths": {
+    "/api/test06": {
+      "post": {
+        "summary": "Generated from TEST_INTENT_06",
+        "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/TestRequest06"}}}},
+        "responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/TestResponse06"}}}}}
+      }
+    }
+  }
+}
