@@ -47,6 +47,7 @@ This builds, generates IR/OpenAPI, lints, and formats.
 - **Event Processing**: Reactive programming support
 - **REST API Runtime**: Auto-generated REST endpoints
 
+### v1.0.0 - Enterprise Features
 - **Multi-language Support**: Bindings for Python, Go, Rust
 - **Distributed Execution**: Cluster support for high availability
 - **Security Policies**: Built-in authentication and authorization
@@ -81,6 +82,7 @@ docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
 - `ghcr.io/lsalihi/cdl-lang:v0.6.0` - Latest stable with type system
 - `ghcr.io/lsalihi/cdl-lang:latest` - Rolling updates
 
+>>>>>>> 4d1ac8f (docs: Add public roadmap and update documentation navigation)
 ## Build
 
 ```bash
