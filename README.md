@@ -88,11 +88,9 @@ docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
 ```bash
 gradle build
 ```
-
 ```bash
 java -cp build/classes/java/main:antlr-4.13.1-complete.jar com.cdl.CDLCLI <command>
 ```
-
 Commands:
 - `cdl build -i <input.cdl> -o <output.ir.json>` - Parse and validate CDL file
 - `cdl gen openapi -i <input.cdl> -o <output.yaml>` - Generate OpenAPI specification
