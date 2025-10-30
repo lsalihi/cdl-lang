@@ -454,6 +454,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#type-system-v060" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type System (v0.6.0)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Type System (v0.6.0)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#built-in-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Built-in Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Definitions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Constraints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typed-intents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typed Intents
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#grammar" class="md-nav__link">
     <span class="md-ellipsis">
       Grammar
@@ -595,6 +646,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#type-system-v060" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type System (v0.6.0)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Type System (v0.6.0)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#built-in-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Built-in Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Definitions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Constraints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typed-intents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typed Intents
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#grammar" class="md-nav__link">
     <span class="md-ellipsis">
       Grammar
@@ -660,36 +762,76 @@
 
 <h1 id="specification">Specification</h1>
 <h2 id="overview">Overview</h2>
-<p>CDL (Cognitive Domain Language) is a DSL for defining business logic in a declarative, traceable, and executable way. It focuses on intents, rules, policies, flows, and mappings with metadata for evidence and trust.</p>
+<p>CDL (Cognitive Domain Language) is a DSL for defining business logic in a declarative, traceable, and executable way. It focuses on intents, rules, policies, flows, and mappings with metadata for evidence and trust. Version 0.6.0 adds a complete type system for type-safe specifications.</p>
 <h2 id="concepts">Concepts</h2>
 <ul>
-<li><strong>Intent</strong>: Describes a business goal with inputs, outputs, evidence, and trust scores.</li>
+<li><strong>Intent</strong>: Describes a business goal with typed inputs, outputs, evidence, and trust scores.</li>
 <li><strong>Rule</strong>: Defines validation or business rules with conditions.</li>
 <li><strong>Policy</strong>: Governance policies for compliance.</li>
 <li><strong>Flow</strong>: Sequences of steps with guards.</li>
 <li><strong>Mapping</strong>: Binds intents to external APIs or systems.</li>
+<li><strong>Type</strong>: Custom data types with field constraints (v0.6.0+).</li>
 </ul>
+<h2 id="type-system-v060">Type System (v0.6.0)</h2>
+<h3 id="built-in-types">Built-in Types</h3>
+<ul>
+<li><code>string</code>: Text values</li>
+<li><code>int</code>: Integer numbers</li>
+<li><code>decimal</code>: Decimal numbers</li>
+<li><code>bool</code>: Boolean values</li>
+<li><code>date</code>: Date values (YYYY-MM-DD)</li>
+<li><code>datetime</code>: DateTime values (ISO 8601)</li>
+<li><code>Email</code>: Email addresses with validation</li>
+<li><code>Money</code>: Monetary values (amount + currency)</li>
+</ul>
+<h3 id="type-definitions">Type Definitions</h3>
+<div class="highlight"><pre><span></span><code>type Customer
+  id: string
+  name: string where length(name) &gt;= 2
+  email: Email
+  age: int where age &gt;= 18
+end
+</code></pre></div>
+<h3 id="constraints">Constraints</h3>
+<ul>
+<li>Comparison operators: <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>==</code>, <code>!=</code></li>
+<li>String functions: <code>length()</code>, <code>contains()</code>, <code>startsWith()</code>, <code>endsWith()</code></li>
+<li>Logical operators: <code>and</code>, <code>or</code>, <code>not</code></li>
+<li>Special functions: <code>today()</code>, <code>in [values]</code></li>
+</ul>
+<h3 id="typed-intents">Typed Intents</h3>
+<div class="highlight"><pre><span></span><code>intent CREATE_USER
+  inputs: &quot;[profile: Customer, password: string]&quot;
+  outputs: &quot;[userId: string, token: string]&quot;
+end
+</code></pre></div>
 <h2 id="grammar">Grammar</h2>
 <p>See <code>src/main/antlr/CDL.g4</code> for the ANTLR grammar.</p>
 <h2 id="ir-intermediate-representation">IR (Intermediate Representation)</h2>
-<p>JSON structure:
+<p>JSON structure with type information:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;types&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;intents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;mappings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <h2 id="backends">Backends</h2>
 <ul>
-<li><strong>OpenAPI 3.0</strong>: Generates API specs from intents/mappings.</li>
-<li><strong>Rego</strong>: Generates OPA policies.</li>
+<li><strong>OpenAPI 3.0</strong>: Generates type-safe API specs with validation schemas</li>
+<li><strong>Rego</strong>: Generates OPA policies with type constraints</li>
 </ul>
 <h2 id="error-codes">Error Codes</h2>
 <ul>
 <li>E001: Duplicate ID</li>
 <li>E002: Invalid type</li>
+<li>E003: Missing evidence</li>
+<li>E004: Type not found</li>
+<li>E005: Invalid constraint</li>
+<li>E006: Circular type reference</li>
+<li>E007: Parameter type mismatch</li>
 </ul>
 <h2 id="versioning">Versioning</h2>
-<p>SemVer: v0.5-MVP</p>
+<p>SemVer: v0.6.0 (Type System)</p>
 
 
 

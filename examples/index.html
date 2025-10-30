@@ -458,27 +458,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-intent" class="md-nav__link">
+  <a href="#type-definitions-v060" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Intent
+      Type Definitions (v0.6.0)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#with-mapping" class="md-nav__link">
+  <a href="#typed-intent" class="md-nav__link">
     <span class="md-ellipsis">
-      With Mapping
+      Typed Intent
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#rule" class="md-nav__link">
+  <a href="#complex-types-with-constraints" class="md-nav__link">
     <span class="md-ellipsis">
-      Rule
+      Complex Types with Constraints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#business-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Business Rules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Mapping
     </span>
   </a>
   
@@ -550,27 +568,45 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-intent" class="md-nav__link">
+  <a href="#type-definitions-v060" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Intent
+      Type Definitions (v0.6.0)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#with-mapping" class="md-nav__link">
+  <a href="#typed-intent" class="md-nav__link">
     <span class="md-ellipsis">
-      With Mapping
+      Typed Intent
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#rule" class="md-nav__link">
+  <a href="#complex-types-with-constraints" class="md-nav__link">
     <span class="md-ellipsis">
-      Rule
+      Complex Types with Constraints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#business-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Business Rules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Mapping
     </span>
   </a>
   
@@ -605,60 +641,139 @@
 
 
 <h1 id="examples">Examples</h1>
-<h2 id="basic-intent">Basic Intent</h2>
-<div class="highlight"><pre><span></span><code>intent INTERBANK_TRANSFER
-goal: &quot;Process an SEPA interbank transfer&quot;
-inputs: &quot;[accountId: String, amount: Money_EUR]&quot;
-outputs: &quot;[paymentId: PaymentId]&quot;
-evidence: &quot;[repo_legacy_PAYMENT_CBL_145_189, trace_POST_payments_at_2023_11_10]&quot;
-tags: &quot;[payments, sepa]&quot;
-trust: &quot;{confidence: 0.85, components: {evidence: 0.90, consistency: 0.80, tests: 0.75}}&quot;
-end
-</code></pre></div>
-<h2 id="with-mapping">With Mapping</h2>
-<div class="highlight"><pre><span></span><code>intent PROCESS_PAYMENT
-goal: &quot;Process a payment&quot;
-inputs: &quot;[amount: Money, account: String]&quot;
-outputs: &quot;[id: String]&quot;
-evidence: &quot;[legacy_code]&quot;
-tags: &quot;[finance]&quot;
+<h2 id="type-definitions-v060">Type Definitions (v0.6.0)</h2>
+<div class="highlight"><pre><span></span><code>type Money
+  amount: decimal where amount &gt;= 0
+  currency: string
 end
 
-mapping PROCESS_PAYMENT -&gt; &quot;api POST /api/payments&quot;
-request: &quot;PaymentRequest&quot;
-response: &quot;PaymentResponse&quot;
+type Customer
+  id: string
+  name: string where length(name) &gt;= 2
+  email: Email
+  age: int where age &gt;= 18
 end
 </code></pre></div>
-<h2 id="rule">Rule</h2>
-<div class="highlight"><pre><span></span><code>rule IBAN_MUST_BE_VALID
-statement: &quot;The IBAN must be valid before issuance&quot;
-applies_to: &quot;INTERBANK_TRANSFER&quot;
-evidence: &quot;[repo_legacy_VALIDATE_CBL_180_206]&quot;
-test_hints: &quot;Invalid IBAN =&gt; 400&quot;
-type: &quot;validation&quot;
+<h2 id="typed-intent">Typed Intent</h2>
+<div class="highlight"><pre><span></span><code>intent CREATE_CUSTOMER
+  goal: &quot;Create a new customer account&quot;
+  inputs: &quot;[customer: Customer]&quot;
+  outputs: &quot;[customerId: string, welcomeEmail: string]&quot;
+  evidence: &quot;[customer_registration_policy]&quot;
+  tags: &quot;[customer, registration]&quot;
+end
+</code></pre></div>
+<h2 id="complex-types-with-constraints">Complex Types with Constraints</h2>
+<div class="highlight"><pre><span></span><code>type Order
+  id: string
+  customerId: string
+  items: OrderItem
+  totalAmount: Money where totalAmount.amount &gt; 0
+  orderDate: date
+  deliveryDate: date where deliveryDate &gt;= orderDate
+end
+
+type OrderItem
+  productId: string
+  quantity: int where quantity &gt; 0 and quantity &lt;= 100
+  unitPrice: Money
+  discount: decimal where discount &gt;= 0.0 and discount &lt;= 0.5
+end
+</code></pre></div>
+<h2 id="business-rules">Business Rules</h2>
+<div class="highlight"><pre><span></span><code>rule CUSTOMER_AGE_VALIDATION
+  statement: &quot;Customer must be of legal age&quot;
+  applies_to: &quot;CREATE_CUSTOMER&quot;
+  evidence: &quot;[gdpr_age_verification]&quot;
+  test_hints: &quot;Age &lt; 18 should be rejected&quot;
+  type: &quot;validation&quot;
+end
+
+rule ORDER_TOTAL_LIMIT
+  statement: &quot;Order total cannot exceed €100,000&quot;
+  applies_to: &quot;CREATE_ORDER&quot;
+  evidence: &quot;[fraud_prevention_policy]&quot;
+  test_hints: &quot;Test with orders over limit&quot;
+  type: &quot;business&quot;
+end
+</code></pre></div>
+<h2 id="api-mapping">API Mapping</h2>
+<div class="highlight"><pre><span></span><code>mapping CREATE_CUSTOMER -&gt; &quot;api POST /api/customers&quot;
+  request: &quot;CustomerRegistrationRequest&quot;
+  response: &quot;CustomerRegistrationResponse&quot;
+end
+
+mapping CREATE_ORDER -&gt; &quot;api POST /api/orders&quot;
+  request: &quot;OrderRequest&quot;
+  response: &quot;OrderResponse&quot;
 end
 </code></pre></div>
 <h2 id="generated-openapi">Generated OpenAPI</h2>
-<p>From the payment example:</p>
+<p>From the customer example:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">openapi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0.0</span>
 <span class="nt">info</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CDL API</span>
+<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Customer API</span>
 <span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+
 <span class="nt">paths</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">/api/payments</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">/api/customers</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">post</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generated from PROCESS_PAYMENT</span>
+<span class="w">      </span><span class="nt">summary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create a new customer account</span>
+<span class="w">      </span><span class="nt">operationId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">createCustomer</span>
 <span class="w">      </span><span class="nt">requestBody</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">content</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">application/json</span><span class="p">:</span>
 <span class="w">            </span><span class="nt">schema</span><span class="p">:</span>
-<span class="w">              </span><span class="nt">$ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#/components/schemas/PaymentRequest&#39;</span>
+<span class="w">              </span><span class="nt">$ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#/components/schemas/CustomerRegistrationRequest&#39;</span>
 <span class="w">      </span><span class="nt">responses</span><span class="p">:</span>
 <span class="w">        </span><span class="s">&#39;200&#39;</span><span class="p p-Indicator">:</span>
+<span class="w">          </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Customer created successfully</span>
 <span class="w">          </span><span class="nt">content</span><span class="p">:</span>
 <span class="w">            </span><span class="nt">application/json</span><span class="p">:</span>
 <span class="w">              </span><span class="nt">schema</span><span class="p">:</span>
-<span class="w">                </span><span class="nt">$ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#/components/schemas/PaymentResponse&#39;</span>
+<span class="w">                </span><span class="nt">$ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#/components/schemas/CustomerRegistrationResponse&#39;</span>
+
+<span class="nt">components</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schemas</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">Customer</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">object</span>
+<span class="w">      </span><span class="nt">required</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">age</span>
+<span class="w">      </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">          </span><span class="nt">minLength</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">        </span><span class="nt">email</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">          </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<span class="w">        </span><span class="nt">age</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">integer</span>
+<span class="w">          </span><span class="nt">minimum</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">18</span>
+
+<span class="w">    </span><span class="nt">CustomerRegistrationRequest</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">object</span>
+<span class="w">      </span><span class="nt">required</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customer</span>
+<span class="w">      </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">customer</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">$ref</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#/components/schemas/Customer&#39;</span>
+
+<span class="w">    </span><span class="nt">CustomerRegistrationResponse</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">object</span>
+<span class="w">      </span><span class="nt">required</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">customerId</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">welcomeEmail</span>
+<span class="w">      </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">customerId</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">        </span><span class="nt">welcomeEmail</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
 </code></pre></div>
 
 
