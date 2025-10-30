@@ -29,41 +29,47 @@ public class OpenAPIGenerator {
             sb.append("      }\n");
             sb.append("    }");
         }
-        sb.append("\n  },\n");
-        sb.append("  \"components\": {\n");
-        sb.append("    \"schemas\": {\n");
+        sb.append("\n  }");
 
-        // Generate schemas from type definitions
-        first = true;
-        for (IR.TypeIR type : ir.types) {
-            if (!first) sb.append(",\n");
-            first = false;
-            sb.append("      \"").append(type.id).append("\": {\n");
-            sb.append("        \"type\": \"object\",\n");
-            sb.append("        \"properties\": {\n");
+        // Only add components section if there are types to define
+        if (!ir.types.isEmpty()) {
+            sb.append(",\n");
+            sb.append("  \"components\": {\n");
+            sb.append("    \"schemas\": {\n");
 
-            boolean firstField = true;
-            for (IR.FieldIR field : type.fields) {
-                if (!firstField) sb.append(",\n");
-                firstField = false;
-                sb.append("          \"").append(field.name).append("\": ");
-                sb.append(generateFieldSchema(field));
-            }
-            sb.append("\n        },\n");
-            sb.append("        \"required\": [");
-            List<String> required = new ArrayList<>();
-            for (IR.FieldIR field : type.fields) {
-                if (field.constraint == null || !field.constraint.contains("optional")) {
-                    required.add("\"" + field.name + "\"");
+            // Generate schemas from type definitions
+            first = true;
+            for (IR.TypeIR type : ir.types) {
+                if (!first) sb.append(",\n");
+                first = false;
+                sb.append("      \"").append(type.id).append("\": {\n");
+                sb.append("        \"type\": \"object\",\n");
+                sb.append("        \"properties\": {\n");
+
+                boolean firstField = true;
+                for (IR.FieldIR field : type.fields) {
+                    if (!firstField) sb.append(",\n");
+                    firstField = false;
+                    sb.append("          \"").append(field.name).append("\": ");
+                    sb.append(generateFieldSchema(field));
                 }
+                sb.append("\n        },\n");
+                sb.append("        \"required\": [");
+                List<String> required = new ArrayList<>();
+                for (IR.FieldIR field : type.fields) {
+                    if (field.constraint == null || !field.constraint.contains("optional")) {
+                        required.add("\"" + field.name + "\"");
+                    }
+                }
+                sb.append(String.join(",", required));
+                sb.append("]\n");
+                sb.append("      }");
             }
-            sb.append(String.join(",", required));
-            sb.append("]\n");
-            sb.append("      }");
+            sb.append("\n    }\n");
+            sb.append("  }");
         }
-        sb.append("\n    }\n");
-        sb.append("  }\n");
-        sb.append("}\n");
+
+        sb.append("\n}\n");
         return sb.toString();
     }
 
