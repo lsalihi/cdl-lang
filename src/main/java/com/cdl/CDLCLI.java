@@ -29,13 +29,33 @@ public class CDLCLI {
                     break;
 
                 case "gen":
-                    if (args.length < 4 || !args[1].equals("openapi")) {
-                        System.err.println("Error: gen command requires 'openapi' subcommand with input and output files");
+                    if (args.length < 2 || !args[1].equals("openapi")) {
+                        System.err.println("Error: gen command requires 'openapi' subcommand");
                         System.exit(1);
                     }
+
+                    String inputFile = null;
+                    String outputFile = null;
+
+                    // Parse arguments - support both formats: positional and -i/-o flags
+                    if (args.length == 4) {
+                        // Positional: gen openapi input.cdl output.yaml
+                        inputFile = args[2];
+                        outputFile = args[3];
+                    } else if (args.length == 6 && args[2].equals("-i") && args[4].equals("-o")) {
+                        // Flag format: gen openapi -i input.cdl -o output.yaml
+                        inputFile = args[3];
+                        outputFile = args[5];
+                    } else {
+                        System.err.println("Error: gen openapi requires input and output files");
+                        System.err.println("Usage: gen openapi <input.cdl> <output.yaml>");
+                        System.err.println("   or: gen openapi -i <input.cdl> -o <output.yaml>");
+                        System.exit(1);
+                    }
+
                     System.out.println("Command executed: gen");
-                    Compiler.Result result2 = Compiler.compile(args[2]);
-                    writeToFile(args[3], result2.openapi);
+                    Compiler.Result result2 = Compiler.compile(inputFile);
+                    writeToFile(outputFile, result2.openapi);
                     System.out.println("CDL v0.6.0 - OpenAPI generation successful!");
                     break;
 
