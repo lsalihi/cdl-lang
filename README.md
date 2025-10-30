@@ -48,6 +48,7 @@ This builds, generates IR/OpenAPI, lints, and formats.
 - **REST API Runtime**: Auto-generated REST endpoints
 
 ### v1.0.0 - Enterprise Features
+>>>>>>> aa659f6 (fix: Correct ASTBuilder.java missing currentFields variable and update README)
 - **Multi-language Support**: Bindings for Python, Go, Rust
 - **Distributed Execution**: Cluster support for high availability
 - **Security Policies**: Built-in authentication and authorization
@@ -82,15 +83,17 @@ docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
 - `ghcr.io/lsalihi/cdl-lang:v0.6.0` - Latest stable with type system
 - `ghcr.io/lsalihi/cdl-lang:latest` - Rolling updates
 
->>>>>>> 4d1ac8f (docs: Add public roadmap and update documentation navigation)
+>>>>>>> aa659f6 (fix: Correct ASTBuilder.java missing currentFields variable and update README)
 ## Build
 
 ```bash
 gradle build
 ```
+
 ```bash
 java -cp build/classes/java/main:antlr-4.13.1-complete.jar com.cdl.CDLCLI <command>
 ```
+
 Commands:
 - `cdl build -i <input.cdl> -o <output.ir.json>` - Parse and validate CDL file
 - `cdl gen openapi -i <input.cdl> -o <output.yaml>` - Generate OpenAPI specification
