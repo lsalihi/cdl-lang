@@ -1,0 +1,19 @@
+type Money
+  amount: decimal where amount >= 0
+  currency: string
+end
+
+type Customer
+  id: string
+  name: string where length(name) >= 2
+  email: Email
+  age: int where age >= 18
+end
+
+intent CREATE_CUSTOMER
+  goal: "Create a new customer account"
+  inputs: "[customer: Customer]"
+  outputs: "[customerId: string, token: string]"
+  evidence: "[registration_policy]"
+  tags: "[customer, registration]"
+end
