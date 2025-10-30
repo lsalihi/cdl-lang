@@ -5,6 +5,7 @@ import com.cdl.ir.IR;
 import com.cdl.backends.OpenAPIGenerator;
 import com.cdl.backends.RegoGenerator;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class Compiler {
     public static Result compile(String fileName) throws Exception {
@@ -15,7 +16,9 @@ public class Compiler {
         var tree = parser.program();
 
         ASTBuilder builder = new ASTBuilder();
-        Program program = builder.build(tree);
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(builder, tree);
+        Program program = builder.build();
 
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.build(program);

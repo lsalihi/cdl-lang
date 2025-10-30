@@ -167,6 +167,8 @@ public class ASTBuilder extends CDLBaseListener {
             // Simple type
             return new TypeReference(typeString);
         }
+    }
+
     @Override
     public void exitProgram(CDLParser.ProgramContext ctx) {
         program = new Program(statements);
@@ -175,3 +177,4 @@ public class ASTBuilder extends CDLBaseListener {
     public Program build() {
         return program;
     }
+}
