@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'jacoco'
+    id 'antlr'
 }
 
 application {
@@ -11,10 +12,19 @@ application {
 sourceSets {
     main {
         java {
-            srcDirs 'src/main/java', 'src/main/antlr'
+            srcDirs 'src/main/java'
+        }
+        antlr {
+            srcDirs 'src/main/antlr'
         }
     }
 }
+
+generateGrammarSource {
+    arguments += ['-visitor', '-listener', '-package', 'com.cdl']
+}
+
+compileJava.dependsOn generateGrammarSource
 
 jacoco {
     toolVersion = "0.8.11"
@@ -37,8 +47,10 @@ jar {
     manifest {
         attributes 'Main-Class': 'com.cdl.CDLCLI'
     }
+    from 'build/classes/java/main'
+    from 'build/generated-src/antlr/main'
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
@@ -51,6 +63,7 @@ repositories {
 }
 
 dependencies {
+    antlr 'org.antlr:antlr4:4.13.1'
     implementation 'org.antlr:antlr4-runtime:4.13.1'
     testImplementation 'junit:junit:4.13.2'
 }
