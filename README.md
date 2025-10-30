@@ -34,6 +34,26 @@ This builds, generates IR/OpenAPI, lints, and formats.
 - **Type References**: Strong typing for intent inputs/outputs
 - **Validation**: Compile-time type checking and circular reference detection
 
+## Roadmap
+
+### v0.7.0 (Q1 2026) - Advanced Types & Modules
+- **Union Types**: `string | int` for flexible type definitions
+- **Generic Types**: `List<Customer>` for parameterized types
+- **Modules**: Namespace support for large-scale projects
+- **Type Aliases**: `type Euro = Money<currency: "EUR">`
+
+### v0.8.0 (Q2 2026) - Runtime & Execution
+- **Runtime Engine**: Execute CDL specifications directly
+- **Database Integration**: Type-safe data persistence
+- **Event Processing**: Reactive programming support
+- **REST API Runtime**: Auto-generated REST endpoints
+
+### v1.0.0 (Q3 2026) - Enterprise Features
+- **Multi-language Support**: Bindings for Python, Go, Rust
+- **Distributed Execution**: Cluster support for high availability
+- **Security Policies**: Built-in authentication and authorization
+- **Monitoring & Observability**: Metrics and tracing integration
+
 ## Build
 
 ```bash

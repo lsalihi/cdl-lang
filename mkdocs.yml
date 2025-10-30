@@ -22,6 +22,7 @@ theme:
 nav:
   - Home: index.md
   - Quickstart: quickstart.md
+  - Roadmap: ROADMAP.md
   - Specification: spec.md
   - Examples: examples.md
   - API Reference: api.md
