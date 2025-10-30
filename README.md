@@ -59,16 +59,27 @@ This builds, generates IR/OpenAPI, lints, and formats.
 ```bash
 gradle build
 ```
-
 ```bash
 java -cp build/classes/java/main:antlr-4.13.1-complete.jar com.cdl.CDLCLI <command>
 ```
-
 Commands:
-- `cdl build -i <input.cdl> -o <output.ir.json>` - Parse to IR
-- `cdl gen openapi -i <input.cdl> -o <output.yaml>` - Generate OpenAPI
-- `cdl fmt -i <input.cdl> [-o <output.cdl>]` - Format CDL
-- `cdl lint -i <input.cdl>` - Lint for errors
+- `cdl build -i <input.cdl> -o <output.ir.json>` - Parse and validate CDL file
+- `cdl gen openapi -i <input.cdl> -o <output.yaml>` - Generate OpenAPI specification
+- `cdl fmt -i <input.cdl> [-o <output.cdl>]` - Format CDL code
+- `cdl lint -i <input.cdl>` - Lint for errors and type violations
+
+### Linter Features (v0.6.0)
+- **Type Validation**: Checks type definitions, constraints, and references
+- **Circular Reference Detection**: Prevents infinite type dependencies
+- **Constraint Validation**: Validates `where` clause expressions
+- **Intent Type Checking**: Ensures input/output types are properly defined
+- **Error Codes**: Structured error reporting (E001-E007)
+
+Run linting:
+```bash
+cdl lint myfile.cdl
+# Returns exit code 1 if errors found, 0 if clean
+```
 
 ## Conformance Test Kit (CTK)
 
