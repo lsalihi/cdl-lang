@@ -30,38 +30,67 @@ This builds, generates IR/OpenAPI, lints, and formats.
 ### Type System (v0.6.0)
 - **Type Definitions**: Custom types with field constraints
 - **Built-in Types**: `string`, `int`, `decimal`, `bool`, `date`, `datetime`, `Email`, `Money`
-- **Constraints**: `where` clauses with functions like `length()`, `contains()`, `today()`
 - **Type References**: Strong typing for intent inputs/outputs
 - **Validation**: Compile-time type checking and circular reference detection
 
 ## Roadmap
 
-### v0.7.0 (Q1 2026) - Advanced Types & Modules
+### v0.7.0 - Advanced Types & Modules
 - **Union Types**: `string | int` for flexible type definitions
-- **Generic Types**: `List<Customer>` for parameterized types
+- **Generic Types**: Parameterized types like `List<Customer>`, `Map<string, User>`
 - **Modules**: Namespace support for large-scale projects
-- **Type Aliases**: `type Euro = Money<currency: "EUR">`
+- **Type Aliases**: Named type aliases for better readability
 
-### v0.8.0 (Q2 2026) - Runtime & Execution
+### v0.8.0 - Runtime & Execution
 - **Runtime Engine**: Execute CDL specifications directly
 - **Database Integration**: Type-safe data persistence
 - **Event Processing**: Reactive programming support
 - **REST API Runtime**: Auto-generated REST endpoints
 
-### v1.0.0 (Q3 2026) - Enterprise Features
 - **Multi-language Support**: Bindings for Python, Go, Rust
 - **Distributed Execution**: Cluster support for high availability
 - **Security Policies**: Built-in authentication and authorization
 - **Monitoring & Observability**: Metrics and tracing integration
+
+## Docker Usage
+
+The easiest way to use CDL is through Docker:
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/lsalihi/cdl-lang:v0.6.0
+
+# Build a CDL file
+docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
+  build /workspace/myfile.cdl
+
+# Generate OpenAPI specification
+docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
+  gen openapi /workspace/myfile.cdl /workspace/api.yaml
+
+# Lint for type errors
+docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
+  lint /workspace/myfile.cdl
+
+# Format CDL code
+docker run --rm -v $(pwd):/workspace ghcr.io/lsalihi/cdl-lang:v0.6.0 \
+  fmt /workspace/myfile.cdl
+```
+
+### Docker Images
+- `ghcr.io/lsalihi/cdl-lang:v0.6.0` - Latest stable with type system
+- `ghcr.io/lsalihi/cdl-lang:latest` - Rolling updates
 
 ## Build
 
 ```bash
 gradle build
 ```
+
 ```bash
 java -cp build/classes/java/main:antlr-4.13.1-complete.jar com.cdl.CDLCLI <command>
 ```
+
 Commands:
 - `cdl build -i <input.cdl> -o <output.ir.json>` - Parse and validate CDL file
 - `cdl gen openapi -i <input.cdl> -o <output.yaml>` - Generate OpenAPI specification

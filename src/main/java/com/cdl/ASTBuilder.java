@@ -13,6 +13,7 @@ public class ASTBuilder extends CDLBaseListener {
     private String currentTarget = "";
     private List<TypedParameter> currentInputs = new ArrayList<>();
     private List<TypedParameter> currentOutputs = new ArrayList<>();
+    private List<Field> currentFields = new ArrayList<>();
 
     @Override
     public void enterIntent(CDLParser.IntentContext ctx) {
